@@ -13,7 +13,7 @@ using UnityEngine;
 
 public static class InitializeUpm
 {
-    [MenuItem("Window/InitializeUPM", priority = -9999)]
+    [MenuItem("Window/Worldreaver/Initialize UPM", priority = -9999)]
     public static void Execute()
     {
         var package = (AssetDatabase.LoadAssetAtPath("Assets/Root/package.json", typeof(TextAsset)) as TextAsset)?.ToString();
