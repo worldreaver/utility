@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/worldreaver/utility/compare/1.0.0...1.1.0) (2020-03-02)
+
+
+### Features
+
+* random extesion for collection ([f4253d0](https://github.com/worldreaver/utility/commit/f4253d0708cce2c81833151b14a9dc0906bbd9fa))
+
 # 1.0.0 (2020-03-01)
 
 
