@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Worldreaver.EditorUtility
 {
+    /// <summary>
+    /// editor utility
+    /// </summary>
     public static partial class EditorUtil
     {
         /// <summary>
@@ -178,6 +181,9 @@ namespace Worldreaver.EditorUtility
         }
     }
     
+    /// <summary>
+    /// type utility
+    /// </summary>
     public static class TypeUtil
     {
         /// <summary>
