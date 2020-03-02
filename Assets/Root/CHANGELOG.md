@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/worldreaver/utility/compare/1.1.0...1.2.0) (2020-03-02)
+
+
+### Features
+
+* add Log script ([6026967](https://github.com/worldreaver/utility/commit/602696795331cf4c07173e167b65f35ad97e2c15))
+
 # [1.1.0](https://github.com/worldreaver/utility/compare/1.0.0...1.1.0) (2020-03-02)
 
 
