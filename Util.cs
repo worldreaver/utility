@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Worldreaver.Utility
 {
+    /// <summary>
+    /// utility
+    /// </summary>
     public static partial class Util
     {
         #region Support
