@@ -280,6 +280,42 @@ namespace Worldreaver.Utility
         }
 
         /// <summary>
+        /// Indicates the random value in the <paramref name="collection"/>
+        /// if <paramref name="collection"/> is empty return default vaule of T
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static T Rnd<T>(this T[] collection)
+        {
+            if (collection == null)
+            {
+                throw Error.ArgumentNull("collection");
+            }
+
+            return collection.Length == 0 ? default : collection[RandomInstance.This.Next(0, collection.Length)];
+        }
+        
+        /// <summary>
+        /// Indicates the random value in the <paramref name="collection"/>
+        /// if <paramref name="collection"/> is empty return default vaule of T
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static T Rnd<T>(this IList<T> collection)
+        {
+            if (collection == null)
+            {
+                throw Error.ArgumentNull("collection");
+            }
+
+            return collection.Count == 0 ? default : collection[RandomInstance.This.Next(0, collection.Count)];
+        }
+        
+        /// <summary>
         /// Indicates the largest value in the <paramref name="collection"/> parameter with condition <paramref name="selector"/> parameter
         /// ( faster than linq .Select(_=>_.something).Max() and .Max(_=>_something) and .OrderByDescending(_ => _.something).First())
         /// </summary>
