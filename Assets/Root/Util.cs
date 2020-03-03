@@ -299,7 +299,7 @@ namespace Worldreaver.Utility
 
             return collection.Length == 0 ? default : collection[RandomInstance.This.Next(0, collection.Length)];
         }
-        
+
         /// <summary>
         /// Indicates the random value in the <paramref name="collection"/>
         /// if <paramref name="collection"/> is empty return default vaule of T
@@ -317,7 +317,7 @@ namespace Worldreaver.Utility
 
             return collection.Count == 0 ? default : collection[RandomInstance.This.Next(0, collection.Count)];
         }
-        
+
         /// <summary>
         /// Indicates the largest value in the <paramref name="collection"/> parameter with condition <paramref name="selector"/> parameter
         /// ( faster than linq .Select(_=>_.something).Max() and .Max(_=>_something) and .OrderByDescending(_ => _.something).First())
@@ -851,6 +851,42 @@ namespace Worldreaver.Utility
             var deltaPosition = new Vector3(deltaPivot.x * size.x, deltaPivot.y * size.y);
             rectTransform.pivot = pivot;
             rectTransform.localPosition -= deltaPosition;
+        }
+
+        #endregion
+
+        #region Number
+
+        /// <summary>
+        /// Compare with 0
+        /// </summary>
+        public static bool IsZero(this float value)
+        {
+            return Math.Abs(value) < Mathf.Epsilon;
+        }
+
+        /// <summary>
+        /// Compare with 0
+        /// </summary>
+        public static bool IsZero(this float val, float epsilon)
+        {
+            return Math.Abs(val) < epsilon;
+        }
+
+        /// <summary>
+        /// Compare with 0
+        /// </summary>
+        public static bool IsZero(this double value)
+        {
+            return Math.Abs(value) < double.Epsilon;
+        }
+
+        /// <summary>
+        /// Check for equivalence
+        /// </summary>
+        public static bool Equal(this float valA, float valB)
+        {
+            return Math.Abs(valA - valB) < Mathf.Epsilon;
         }
 
         #endregion
