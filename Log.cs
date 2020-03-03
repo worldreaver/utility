@@ -18,7 +18,7 @@ namespace Worldreaver.Utility
             EditorUtility.EditorUtil.RemoveDefineSymbols(ENABLE_LOG);
         }
 #else
-         [MenuItem("Window/Worldreaver/Utility/Enable Log")]
+         [UnityEditor.MenuItem("Window/Worldreaver/Utility/Enable Log")]
          private static void EnableLog()
          {
              EditorUtility.EditorUtil.AddDefineSymbols(ENABLE_LOG);
