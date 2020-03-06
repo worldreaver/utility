@@ -1,6 +1,6 @@
 {
   "name": "com.worldreaver.utility",
-  "displayName": "utility",
+  "displayName": "Utility",
   "description": "Provide utility scripts for Unity",
   "version": "1.2.0",
   "unity": "2019.2",
@@ -9,6 +9,6 @@
   "dependencies": {},
   "repository": {
     "type": "git",
-    "url": "https://github.com/worldreaver/utility"
+    "url": "https://github.com/worldreaver/Utility"
   }
 }
