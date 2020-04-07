@@ -170,7 +170,7 @@ namespace Worldreaver.Utility
         /// </summary>
         /// <param name="value">string number</param>
         /// <returns></returns>
-        public static string ToAlphabetFast(this string value)
+        public static string ToAlphabet(this string value)
         {
             value = value.Split('.')[0];
             var len = value.Length;
