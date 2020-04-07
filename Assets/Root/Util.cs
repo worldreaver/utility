@@ -25,7 +25,11 @@ namespace Worldreaver.Utility
         /// <param name="newMax">new max value</param>
         /// <returns>new value in range [<paramref name="newMin"/> to <paramref name="newMax"/>]</returns>
         /// <exception cref="T:System.ArgumentOutOfRangeException">out_of_range</exception>
-        public static float ClampRemap(this float value, float oldMin, float oldMax, float newMin, float newMax)
+        public static float ClampRemap(this float value,
+            float oldMin,
+            float oldMax,
+            float newMin,
+            float newMax)
         {
             if (value < oldMin || value > oldMax)
             {
@@ -54,7 +58,11 @@ namespace Worldreaver.Utility
         /// <param name="newMin">new min value</param>
         /// <param name="newMax">new max value</param>
         /// <returns>new value in range [<paramref name="newMin"/> to <paramref name="newMax"/>]</returns>
-        public static float Remap(this float value, float oldMin, float oldMax, float newMin, float newMax)
+        public static float Remap(this float value,
+            float oldMin,
+            float oldMax,
+            float newMin,
+            float newMax)
         {
             return (value - oldMin) / (oldMax - oldMin) * (newMax - newMin) + newMin;
         }
@@ -68,7 +76,9 @@ namespace Worldreaver.Utility
         /// <param name="start">start index</param>
         /// <param name="count">number sub</param>
         /// <returns>sub array</returns>
-        public static T[] Sub<T>(this T[] source, int start, int count)
+        public static T[] Sub<T>(this T[] source,
+            int start,
+            int count)
         {
             var result = new T[count];
             for (var i = 0; i < count; i++)
@@ -111,17 +121,91 @@ namespace Worldreaver.Utility
             }
 
             //{0, ""}, {1, "K"}, {2, "M"}, {3, "B"}, {4, "T"}
-            var integerPart = len % 3;
-            if (integerPart == 0)
-            {
-                integerPart = 3;
-            }
+            var intPart = len % 3;
+            if (intPart == 0) intPart = 3;
+            intPart += index;
+            intPart += 2; // for floating point
+            if (intPart > len) intPart = len;
 
-            integerPart += index;
-            for (int i = index; i < integerPart; i++)
+            var tempString = stringBuilder.ToString();
+
+            stringBuilder.Clear();
+            for (int i = index; i < intPart; i++)
             {
                 stringBuilder.Append(str[i]);
             }
+
+            var floating = double.Parse(stringBuilder.ToString());
+            floating /= 100;
+            stringBuilder.Clear();
+            stringBuilder.Append(tempString).Append(floating);
+
+            if (len > 15)
+            {
+                var n = (len - 16) / 3;
+                var firstChar = (char) (65 + n / 26);
+                var secondChar = (char) (65 + n % 26);
+                stringBuilder.Append(firstChar);
+                stringBuilder.Append(secondChar);
+            }
+            else if (len > 12) stringBuilder.Append('T');
+            else if (len > 9) stringBuilder.Append('B');
+            else if (len > 6) stringBuilder.Append('M');
+            else if (len > 3) stringBuilder.Append('K');
+
+            return stringBuilder.ToString();
+        }
+
+        /// <summary>
+        /// formatting Big Numbers: The “aa” Notation
+        ///
+        /// number                alphabet
+        /// 1                        1
+        /// 1000                     1K
+        /// 1000000                  1M
+        /// 1000000000               1B
+        /// 1000000000000            1T
+        /// 1000000000000000         1AA
+        ///
+        /// </summary>
+        /// <param name="value">string number</param>
+        /// <returns></returns>
+        public static string ToAlphabetFast(this string value)
+        {
+            value = value.Split('.')[0];
+            var len = value.Length;
+            var stringBuilder = new System.Text.StringBuilder();
+            var index = 0;
+            var num = 3;
+            if (value[0] == '-')
+            {
+                stringBuilder.Append('-');
+                len--;
+                index = 1;
+                num = 4;
+            }
+
+            if (len <= num) return value;
+
+            //{0, ""}, {1, "K"}, {2, "M"}, {3, "B"}, {4, "T"}
+            var intPart = len % 3;
+            if (intPart == 0) intPart = 3;
+            intPart += index;
+            intPart += 2; // for floating point
+            if (intPart > len) intPart = len;
+
+            var tempString = stringBuilder.ToString();
+
+            stringBuilder.Clear();
+            for (int i = index; i < intPart; i++)
+            {
+                stringBuilder.Append(value[i]);
+            }
+
+            var floating = double.Parse(stringBuilder.ToString());
+            floating /= 100;
+            stringBuilder.Clear();
+            stringBuilder.Append(tempString).Append(floating);
 
             if (len > 15)
             {
@@ -155,7 +239,8 @@ namespace Worldreaver.Utility
         /// <see langword="true" /> if the <paramref name="value" /> parameter is added success in to <paramref name="collection"/>; otherwise, <see langword="false" />.
         /// </returns>
         /// <exception cref="T:System.ArgumentNullException"><param name="collection"> parameter is null</param></exception>
-        public static bool Add<T>(this IList<T> collection, T value)
+        public static bool Add<T>(this IList<T> collection,
+            T value)
         {
             if (collection == null)
             {
@@ -212,7 +297,8 @@ namespace Worldreaver.Utility
         /// <returns>
         /// <see langword="true" /> if the <paramref name="x" /> parameter is == <paramref name="y"/>; otherwise, <see langword="false" />.
         /// </returns>
-        public static bool Equals<T>(T x, T y)
+        public static bool Equals<T>(T x,
+            T y)
         {
             return EqualityComparer<T>.Default.Equals(x, y);
         }
@@ -228,7 +314,8 @@ namespace Worldreaver.Utility
         /// less than 0 if the <paramref name="x" /> parameter less than <paramref name="y"/> parameter.
         /// geater than 0 if the <paramref name="x" /> parameter geater than <paramref name="y"/> parameter.
         /// </returns>
-        public static int Compare<T>(T x, T y)
+        public static int Compare<T>(T x,
+            T y)
         {
             return Comparer<T>.Default.Compare(x, y);
         }
@@ -242,7 +329,8 @@ namespace Worldreaver.Utility
         /// <typeparam name="T"></typeparam>
         /// <see langword="true" /> if the <paramref name="collection" /> parameter is contains <paramref name="value"/>; otherwise, <see langword="false" />.
         /// <exception cref="T:System.ArgumentNullException"><paramref name="collection"/> parameter is null</exception>
-        public static bool Exists<T>(this T[] collection, T value)
+        public static bool Exists<T>(this T[] collection,
+            T value)
         {
             if (collection == null)
             {
@@ -272,7 +360,8 @@ namespace Worldreaver.Utility
         /// <typeparam name="T"></typeparam>
         /// <see langword="true" /> if the <paramref name="collection" /> parameter is contains <paramref name="value"/>; otherwise, <see langword="false" />.
         /// <exception cref="T:System.ArgumentNullException"><paramref name="collection"/> parameter is null</exception>
-        public static bool Exists<T>(this IList<T> collection, T value)
+        public static bool Exists<T>(this IList<T> collection,
+            T value)
         {
             if (collection == null)
             {
@@ -352,7 +441,8 @@ namespace Worldreaver.Utility
         /// <returns>T have max value follow expression selector</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="collection"/> parameter is null</exception>
         /// <exception cref="InvalidOperationException">sequence empty</exception>
-        public static T MaxItem<T, TU>(this T[] collection, Func<T, TU> selector) where TU : IComparable<TU>
+        public static T MaxItem<T, TU>(this T[] collection,
+            Func<T, TU> selector) where TU : IComparable<TU>
         {
             if (collection == null)
             {
@@ -395,7 +485,8 @@ namespace Worldreaver.Utility
         /// <returns>T have max value follow expression selector</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="collection"/> parameter is null</exception>
         /// <exception cref="InvalidOperationException">sequence empty</exception>
-        public static T MaxItem<T, TU>(this IList<T> collection, Func<T, TU> selector) where TU : IComparable<TU>
+        public static T MaxItem<T, TU>(this IList<T> collection,
+            Func<T, TU> selector) where TU : IComparable<TU>
         {
             if (collection == null)
             {
@@ -438,7 +529,8 @@ namespace Worldreaver.Utility
         /// <returns>T have min value follow expression selector</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="collection"/> parameter is null</exception>
         /// <exception cref="InvalidOperationException">sequence empty</exception>
-        public static T MinItem<T, TU>(this T[] collection, Func<T, TU> selector) where TU : IComparable<TU>
+        public static T MinItem<T, TU>(this T[] collection,
+            Func<T, TU> selector) where TU : IComparable<TU>
         {
             if (collection == null)
             {
@@ -481,7 +573,8 @@ namespace Worldreaver.Utility
         /// <returns>T have min value follow expression selector</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="collection"/> parameter is null</exception>
         /// <exception cref="InvalidOperationException">sequence empty</exception>
-        public static T MinItem<T, TU>(this IList<T> collection, Func<T, TU> selector) where TU : IComparable<TU>
+        public static T MinItem<T, TU>(this IList<T> collection,
+            Func<T, TU> selector) where TU : IComparable<TU>
         {
             if (collection == null)
             {
@@ -695,7 +788,9 @@ namespace Worldreaver.Utility
         /// <see langword="true" /> if the <paramref name="key" /> parameter added success in to <paramref name="dictionary"/>; otherwise, <see langword="false" />.
         /// </returns>
         /// <exception cref="ArgumentNullException"><paramref name="dictionary"/> parameter is null</exception>
-        public static bool Add<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
+        public static bool Add<TKey, TValue>(IDictionary<TKey, TValue> dictionary,
+            TKey key,
+            TValue value)
         {
             if (dictionary == null)
             {
@@ -717,7 +812,8 @@ namespace Worldreaver.Utility
         /// <exception cref="ArgumentNullException"><paramref name="keys"/> parameter is null</exception>
         /// <exception cref="ArgumentNullException"><paramref name="values"/> parameter is null</exception>
         /// <exception cref="ArgumentException">Size <paramref name="keys"/> and size <paramref name="values"/> diffirent!</exception>
-        public static IDictionary<TKey, TValue> MakeDictionary<TKey, TValue>(this TKey[] keys, TValue[] values)
+        public static IDictionary<TKey, TValue> MakeDictionary<TKey, TValue>(this TKey[] keys,
+            TValue[] values)
         {
             if (keys == null)
             {
@@ -753,7 +849,8 @@ namespace Worldreaver.Utility
         /// <exception cref="ArgumentNullException"><paramref name="keys"/> parameter is null</exception>
         /// <exception cref="ArgumentNullException"><paramref name="values"/> parameter is null</exception>
         /// <exception cref="ArgumentException">Size <paramref name="keys"/> and size <paramref name="values"/> diffirent!</exception>
-        public static IDictionary<TKey, TValue> MakeDictionary<TKey, TValue>(this IList<TKey> keys, IList<TValue> values)
+        public static IDictionary<TKey, TValue> MakeDictionary<TKey, TValue>(this IList<TKey> keys,
+            IList<TValue> values)
         {
             if (keys == null)
             {
@@ -789,7 +886,8 @@ namespace Worldreaver.Utility
         /// <param name="position"></param>
         /// <param name="canvasRectTransform"></param>
         /// <returns>Vector2</returns>
-        public static Vector2 ToCanvasPosition(this Vector3 position, RectTransform canvasRectTransform)
+        public static Vector2 ToCanvasPosition(this Vector3 position,
+            RectTransform canvasRectTransform)
         {
             if (Camera.main == null)
             {
@@ -807,7 +905,8 @@ namespace Worldreaver.Utility
         /// <param name="position"></param>
         /// <param name="canvasRectTransform"></param>
         /// <returns></returns>
-        public static Vector2 ToWorldPosition(this Vector3 position, RectTransform canvasRectTransform)
+        public static Vector2 ToWorldPosition(this Vector3 position,
+            RectTransform canvasRectTransform)
         {
             if (Camera.main == null)
             {
@@ -833,7 +932,8 @@ namespace Worldreaver.Utility
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <returns>to.anchoredPosition + localPoint - pivotDerivedOffset</returns>
-        public static Vector2 SwitchToRectTransform(this RectTransform from, RectTransform to)
+        public static Vector2 SwitchToRectTransform(this RectTransform from,
+            RectTransform to)
         {
             var screenP = from.ConvertRectTransform();
             RectTransformUtility.ScreenPointToLocalPointInRectangle(to, screenP, null, out var localPoint);
@@ -850,7 +950,8 @@ namespace Worldreaver.Utility
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <returns>'localPoint - pivotDerivedOffset'</returns>
-        public static Vector2 SwitchToRectTransform2(this RectTransform from, RectTransform to)
+        public static Vector2 SwitchToRectTransform2(this RectTransform from,
+            RectTransform to)
         {
             var screenP = from.ConvertRectTransform();
             RectTransformUtility.ScreenPointToLocalPointInRectangle(to, screenP, null, out var localPoint);
@@ -865,7 +966,8 @@ namespace Worldreaver.Utility
         /// </summary>
         /// <param name="rectTransform"></param>
         /// <param name="pivot"></param>
-        public static void SetPivot(RectTransform rectTransform, Vector2 pivot)
+        public static void SetPivot(RectTransform rectTransform,
+            Vector2 pivot)
         {
             if (rectTransform == null) return;
 
@@ -885,7 +987,10 @@ namespace Worldreaver.Utility
         /// <param name="y">If this is not null, transform.position.y is set to this value.</param>
         /// <param name="z">If this is not null, transform.position.z is set to this value.</param>
         /// <returns>The transform itself.</returns>
-        public static Transform SetPosition(this Transform transform, float? x = null, float? y = null, float? z = null)
+        public static Transform SetPosition(this Transform transform,
+            float? x = null,
+            float? y = null,
+            float? z = null)
         {
             transform.position = transform.position.Change(x, y, z);
             return transform;
@@ -900,7 +1005,10 @@ namespace Worldreaver.Utility
         /// <param name="y">If this is not null, transform.localPosition.y is set to this value.</param>
         /// <param name="z">If this is not null, transform.localPosition.z is set to this value.</param>
         /// <returns>The transform itself.</returns>
-        public static Transform SetLocalPosition(this Transform transform, float? x = null, float? y = null, float? z = null)
+        public static Transform SetLocalPosition(this Transform transform,
+            float? x = null,
+            float? y = null,
+            float? z = null)
         {
             transform.localPosition = transform.localPosition.Change(x, y, z);
             return transform;
@@ -915,7 +1023,10 @@ namespace Worldreaver.Utility
         /// <param name="y">If this is not null, transform.localScale.y is set to this value.</param>
         /// <param name="z">If this is not null, transform.localScale.z is set to this value.</param>
         /// <returns>The transform itself.</returns>
-        public static Transform SetLocalScale(this Transform transform, float? x = null, float? y = null, float? z = null)
+        public static Transform SetLocalScale(this Transform transform,
+            float? x = null,
+            float? y = null,
+            float? z = null)
         {
             transform.localScale = transform.localScale.Change(x, y, z);
             return transform;
@@ -930,7 +1041,10 @@ namespace Worldreaver.Utility
         /// <param name="y">If this is not null, transform.lossyScale.y is set to this value.</param>
         /// <param name="z">If this is not null, transform.lossyScale.z is set to this value.</param>
         /// <returns>The transform itself.</returns>
-        public static Transform SetLossyScale(this Transform transform, float? x = null, float? y = null, float? z = null)
+        public static Transform SetLossyScale(this Transform transform,
+            float? x = null,
+            float? y = null,
+            float? z = null)
         {
             var lossyScale = transform.lossyScale.Change(x, y, z);
 
@@ -954,7 +1068,10 @@ namespace Worldreaver.Utility
         /// <param name="y">If this is not null, transform.eulerAngles.y is set to this value.</param>
         /// <param name="z">If this is not null, transform.eulerAngles.z is set to this value.</param>
         /// <returns>The transform itself.</returns>
-        public static Transform SetEulerAngles(this Transform transform, float? x = null, float? y = null, float? z = null)
+        public static Transform SetEulerAngles(this Transform transform,
+            float? x = null,
+            float? y = null,
+            float? z = null)
         {
             transform.eulerAngles = transform.eulerAngles.Change(x, y, z);
             return transform;
@@ -969,7 +1086,10 @@ namespace Worldreaver.Utility
         /// <param name="y">If this is not null, transform.localEulerAngles.y is set to this value.</param>
         /// <param name="z">If this is not null, transform.localEulerAngles.z is set to this value.</param>
         /// <returns>The transform itself.</returns>
-        public static Transform SetLocalEulerAngles(this Transform transform, float? x = null, float? y = null, float? z = null)
+        public static Transform SetLocalEulerAngles(this Transform transform,
+            float? x = null,
+            float? y = null,
+            float? z = null)
         {
             transform.localEulerAngles = transform.localEulerAngles.Change(x, y, z);
             return transform;
@@ -990,7 +1110,8 @@ namespace Worldreaver.Utility
         /// <summary>
         /// Compare with 0
         /// </summary>
-        public static bool IsZero(this float val, float epsilon)
+        public static bool IsZero(this float val,
+            float epsilon)
         {
             return Math.Abs(val) < epsilon;
         }
@@ -1006,7 +1127,8 @@ namespace Worldreaver.Utility
         /// <summary>
         /// Check for equivalence
         /// </summary>
-        public static bool Equal(this float valA, float valB)
+        public static bool Equal(this float valA,
+            float valB)
         {
             return Math.Abs(valA - valB) < Mathf.Epsilon;
         }
@@ -1021,7 +1143,8 @@ namespace Worldreaver.Utility
         /// <param name="rect">The Rect.</param>
         /// <param name="extendDistance">The distance to extend/shrink the rect to each side.</param>
         /// <returns>A random position inside the extended rect.</returns>
-        public static Vector2 RandomPosition(this Rect rect, float extendDistance = 0f)
+        public static Vector2 RandomPosition(this Rect rect,
+            float extendDistance = 0f)
         {
             var xMax = rect.xMax + extendDistance;
             var xMin = rect.xMin - extendDistance;
@@ -1029,8 +1152,7 @@ namespace Worldreaver.Utility
             var yMax = rect.yMax + extendDistance;
             var yMin = rect.yMin - extendDistance;
 
-            return new Vector2(RandomInstance.This.NextDouble(xMin, xMax),
-                RandomInstance.This.NextDouble(yMin, yMax));
+            return new Vector2(RandomInstance.This.NextDouble(xMin, xMax), RandomInstance.This.NextDouble(yMin, yMax));
         }
 
         /// <summary>
@@ -1040,7 +1162,9 @@ namespace Worldreaver.Utility
         /// <param name="width">The target width of the subrect. Clamped to the width of the given rect.</param>
         /// <param name="height">The target height of the subrect. Clamped to the height of the given rect.</param>
         /// <returns>A random subrect with the given width and height.</returns>
-        public static Rect RandomSubRect(this Rect rect, float width, float height)
+        public static Rect RandomSubRect(this Rect rect,
+            float width,
+            float height)
         {
             width = Mathf.Min(rect.width, width);
             height = Mathf.Min(rect.height, height);
@@ -1061,10 +1185,11 @@ namespace Worldreaver.Utility
         /// <param name="position">A position that should be restricted to the rect.</param>
         /// <param name="extendDistance">The distance to extend/shrink the rect to each side.</param>
         /// <returns>The vector, clamped to the Rect.</returns>
-        public static Vector2 Clamp2(this Rect rect, Vector2 position, float extendDistance = 0f)
+        public static Vector2 Clamp2(this Rect rect,
+            Vector2 position,
+            float extendDistance = 0f)
         {
-            return new Vector2(Mathf.Clamp(position.x, rect.xMin - extendDistance, rect.xMax + extendDistance),
-                Mathf.Clamp(position.y, rect.yMin - extendDistance, rect.yMax + extendDistance));
+            return new Vector2(Mathf.Clamp(position.x, rect.xMin - extendDistance, rect.xMax + extendDistance), Mathf.Clamp(position.y, rect.yMin - extendDistance, rect.yMax + extendDistance));
         }
 
         /// <summary>
@@ -1075,10 +1200,11 @@ namespace Worldreaver.Utility
         /// <param name="position">A position that should be restricted to the rect.</param>
         /// <param name="extendDistance">The distance to extend/shrink the rect to each side.</param>
         /// <returns>The vector, clamped to the Rect.</returns>
-        public static Vector3 Clamp3(this Rect rect, Vector3 position, float extendDistance = 0f)
+        public static Vector3 Clamp3(this Rect rect,
+            Vector3 position,
+            float extendDistance = 0f)
         {
-            return new Vector3(Mathf.Clamp(position.x, rect.xMin - extendDistance, rect.xMax + extendDistance),
-                Mathf.Clamp(position.y, rect.yMin - extendDistance, rect.yMax + extendDistance),
+            return new Vector3(Mathf.Clamp(position.x, rect.xMin - extendDistance, rect.xMax + extendDistance), Mathf.Clamp(position.y, rect.yMin - extendDistance, rect.yMax + extendDistance),
                 position.z);
         }
 
@@ -1088,7 +1214,8 @@ namespace Worldreaver.Utility
         /// <param name="rect">The Rect.</param>
         /// <param name="extendDistance">The distance to extend/shrink the rect to each side.</param>
         /// <returns>The rect, extended/shrunken by extendDistance to each side.</returns>
-        public static Rect Extend(this Rect rect, float extendDistance)
+        public static Rect Extend(this Rect rect,
+            float extendDistance)
         {
             var copy = rect;
             copy.xMin -= extendDistance;
@@ -1105,12 +1232,11 @@ namespace Worldreaver.Utility
         /// <param name="position">A position that should be restricted to the rect.</param>
         /// <param name="extendDistance">The distance to extend/shrink the rect to each side.</param>
         /// <returns>True if the position is inside the extended rect.</returns>
-        public static bool Contains(this Rect rect, Vector2 position, float extendDistance)
+        public static bool Contains(this Rect rect,
+            Vector2 position,
+            float extendDistance)
         {
-            return (position.x > rect.xMin + extendDistance) &&
-                   (position.y > rect.yMin + extendDistance) &&
-                   (position.x < rect.xMax - extendDistance) &&
-                   (position.y < rect.yMax - extendDistance);
+            return (position.x > rect.xMin + extendDistance) && (position.y > rect.yMin + extendDistance) && (position.x < rect.xMax - extendDistance) && (position.y < rect.yMax - extendDistance);
         }
 
         /// <summary>
@@ -1141,7 +1267,8 @@ namespace Worldreaver.Utility
         /// <returns>
         /// <see langword="true" /> if the <paramref name="path" /> parameter is contains file with <paramref name="name"/>; otherwise, <see langword="false" />.
         /// </returns>
-        public static bool ExistsFile(string path, string name)
+        public static bool ExistsFile(string path,
+            string name)
         {
             return System.IO.File.Exists($"{path}/{name}.wr");
         }
@@ -1151,7 +1278,8 @@ namespace Worldreaver.Utility
         /// </summary>
         /// <param name="path"></param>
         /// <param name="name"></param>
-        public static void RemoveFile(string path, string name)
+        public static void RemoveFile(string path,
+            string name)
         {
             if (ExistsFile(path, name))
             {
@@ -1176,7 +1304,8 @@ namespace Worldreaver.Utility
         /// <param name="color">The Color to copy.</param>
         /// <param name="a">The new a component.</param>
         /// <returns>A copy of the Color with a changed alpha.</returns>
-        public static Color ChangeAlpha(this Color color, float a)
+        public static Color ChangeAlpha(this Color color,
+            float a)
         {
             color.a = a;
             return color;
@@ -1190,7 +1319,9 @@ namespace Worldreaver.Utility
         /// <param name="x">If this is not null, the x component is set to this value.</param>
         /// <param name="y">If this is not null, the y component is set to this value.</param>
         /// <returns>A copy of the Vector2 with changed values.</returns>
-        public static Vector2 Change(this Vector2 vector, float? x = null, float? y = null)
+        public static Vector2 Change(this Vector2 vector,
+            float? x = null,
+            float? y = null)
         {
             if (x.HasValue) vector.x = x.Value;
             if (y.HasValue) vector.y = y.Value;
@@ -1206,7 +1337,10 @@ namespace Worldreaver.Utility
         /// <param name="y">If this is not null, the y component is set to this value.</param>
         /// <param name="z">If this is not null, the z component is set to this value.</param>
         /// <returns>A copy of the Vector3 with changed values.</returns>
-        public static Vector3 Change(this Vector3 vector, float? x = null, float? y = null, float? z = null)
+        public static Vector3 Change(this Vector3 vector,
+            float? x = null,
+            float? y = null,
+            float? z = null)
         {
             if (x.HasValue) vector.x = x.Value;
             if (y.HasValue) vector.y = y.Value;
@@ -1224,7 +1358,11 @@ namespace Worldreaver.Utility
         /// <param name="z">If this is not null, the z component is set to this value.</param>
         /// <param name="w">If this is not null, the w component is set to this value.</param>
         /// <returns>A copy of the Vector4 with changed values.</returns>
-        public static Vector4 Change(this Vector4 vector, float? x = null, float? y = null, float? z = null, float? w = null)
+        public static Vector4 Change(this Vector4 vector,
+            float? x = null,
+            float? y = null,
+            float? z = null,
+            float? w = null)
         {
             if (x.HasValue) vector.x = x.Value;
             if (y.HasValue) vector.y = y.Value;
@@ -1240,7 +1378,8 @@ namespace Worldreaver.Utility
         /// <param name="v">The Vector2 to rotate.</param>
         /// <param name="angleRad">How far to rotate the Vector2 in radians.</param>
         /// <returns>The rotated Vector2.</returns>
-        public static Vector2 RotateRad(this Vector2 v, float angleRad)
+        public static Vector2 RotateRad(this Vector2 v,
+            float angleRad)
         {
             // http://answers.unity3d.com/questions/661383/whats-the-most-efficient-way-to-rotate-a-vector2-o.html
             var sin = Mathf.Sin(angleRad);
@@ -1260,7 +1399,8 @@ namespace Worldreaver.Utility
         /// <param name="v">The Vector2 to rotate.</param>
         /// <param name="angleDeg">How far to rotate the Vector2 in degrees.</param>
         /// <returns>The rotated Vector2.</returns>
-        public static Vector2 RotateDeg(this Vector2 v, float angleDeg)
+        public static Vector2 RotateDeg(this Vector2 v,
+            float angleDeg)
         {
             return v.RotateRad(angleDeg * Mathf.Deg2Rad);
         }
@@ -1305,12 +1445,16 @@ namespace Worldreaver.Utility
             return vector.GetAngleRad() * Mathf.Rad2Deg;
         }
 
-        public static double NextDouble(this RandomFaster randomFaster, double min, double max)
+        public static double NextDouble(this RandomFaster randomFaster,
+            double min,
+            double max)
         {
             return randomFaster.NextDouble() * (max - min) + min;
         }
 
-        public static float NextDouble(this RandomFaster randomFaster, float min, float max)
+        public static float NextDouble(this RandomFaster randomFaster,
+            float min,
+            float max)
         {
             return (float) (randomFaster.NextDouble() * (max - min) + min);
         }
@@ -1320,7 +1464,8 @@ namespace Worldreaver.Utility
 
     public static class Error
     {
-        public static Exception ArgumentNull(string argumentName, string message = "")
+        public static Exception ArgumentNull(string argumentName,
+            string message = "")
         {
             return new ArgumentNullException(argumentName, message);
         }
