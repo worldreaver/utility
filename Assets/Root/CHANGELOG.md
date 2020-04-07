@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/worldreaver/Utility/compare/1.2.0...1.3.0) (2020-04-07)
+
+
+### Features
+
+* update display #.## for method ToAlphabet ([6671e54](https://github.com/worldreaver/Utility/commit/6671e544f1dcc34f82cf22bf25a4bc42896a664c))
+
 # [1.2.0](https://github.com/worldreaver/utility/compare/1.1.0...1.2.0) (2020-03-02)
 
 
