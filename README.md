@@ -6,6 +6,10 @@
 
 ## Installation
 
-## Usage
+UPM Package
+
+### Install via git URL
+
+After Unity 2019.3.4f1, Unity 2020.1a21, that support path query parameter of git package. You can add `https://github.com/worldreaver/Utility.git?path=Assets/Root` to Package Manager
 
 
